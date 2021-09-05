@@ -1,12 +1,13 @@
 <h1>Movies</h1>
 <hr />
 <ul class="list-group">
+  {{urls.detailURL}}
   {{#each movies}}
   <li class="list-group-item">
     <div class="card">
       <div class="card-body">
         <h2 class="card-title">
-          <a href="{{url}}" class="text-decoration-none text-black">{{this.title}}</a>
+          <a href="{{this.detailURL}}" class="text-decoration-none text-black">{{this.title}}</a>
         </h2>
         <div>
           <h3 class="card-subtitle mb-2 text-muted">줄거리</h3>

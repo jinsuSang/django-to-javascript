@@ -1,0 +1,20 @@
+<h1 class="text-center">{{ movie.title }}</h1>
+<p class="text-end">등록 날짜: {{ movie.createdAt }}</p>
+<p class="text-end">수정 날짜: {{ movie.updatedAt }}</p>
+
+<div>
+  <h2 class="text-bold">줄거리</h2>
+  <p>{{ movie.overview }}</p>
+</div>
+<div class="d-flex justify-content-end">
+  <a href="{{urls.editURL}}/{{movie.id}}" class="p-2"><button class="btn btn-primary">EDIT</button></a>
+  <form action="{{urls.deleteURL}}/{{movie.id}}" method="post" class="p-2">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    <button class="btn btn-danger">DELETE</button>
+  </form>
+</div>
+<div>
+  <p>포스터 URL: {{ movie.postPath }}</p>
+  <img src="{{ movie.postPath }}" alt="영화 포스터" class="img-thumbnail" />
+</div>
+<hr />

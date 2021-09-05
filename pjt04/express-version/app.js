@@ -1,5 +1,9 @@
 const express = require('express')
+const cookieParser = require('cookie-parser')
+const csrf = require('csurf')
+const helmet = require('helmet')
 const hbs = require('express-handlebars')
+
 const path = require('path')
 
 const movieRouter = require('./Movies/routes/movies')
@@ -17,6 +21,11 @@ app.engine(
 )
 app.set('view engine', 'hbs')
 
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(cookieParser())
+app.use(csrf({ cookie: true }))
+app.use(helmet())
 app.use('/movies', movieRouter)
 
 app.get('/', function (req, res) {
