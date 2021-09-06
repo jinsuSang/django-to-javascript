@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
       },
       overview: DataTypes.TEXT,
-      postPath: DataTypes.STRING(100),
+      posterPath: DataTypes.STRING(100),
     },
     {
       sequelize,

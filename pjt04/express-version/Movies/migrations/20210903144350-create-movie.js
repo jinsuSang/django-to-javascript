@@ -15,7 +15,7 @@ module.exports = {
       overview: {
         type: Sequelize.TEXT,
       },
-      postPath: {
+      posterPath: {
         type: Sequelize.STRING(100),
       },
       createdAt: {

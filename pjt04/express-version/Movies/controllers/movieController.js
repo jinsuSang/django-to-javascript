@@ -9,16 +9,21 @@ const updateURL = '/movies/update'
 const deleteURL = '/movies/delete'
 
 async function index(req, res) {
-  const rows = await models.movie.findAll()
-  const movies = rows.map((row) => row.dataValues)
-  movies.forEach((movie) => (movie.detailURL = detailURL + '/' + movie.id))
-  const urls = { indexURL, registerURL }
-  const context = {
-    movies,
-    urls,
-    csrfToken: req.csrfToken(),
+  try {
+    const rows = await models.movie.findAll()
+    const movies = rows.map((row) => row.dataValues)
+    movies.forEach((movie) => (movie.detailURL = detailURL + '/' + movie.id))
+    const urls = { indexURL, registerURL }
+    const context = {
+      movies,
+      urls,
+      csrfToken: req.csrfToken(),
+    }
+    return res.render('movies/index', context)
+  } catch (error) {
+    console.log(error.message)
+    res.status(404).send()
   }
-  return res.render('movies/index', context)
 }
 
 function register(req, res) {
@@ -31,17 +36,14 @@ function register(req, res) {
 
 async function create(req, res) {
   try {
-    if (req.method === 'POST') {
-      const { title, overview } = req.body
-      const postPath = req.body['poster-path']
-      const movie = await models.movie.create({
-        title,
-        overview,
-        postPath,
-      })
-      return res.redirect(detailURL + '/' + movie.dataValues.id)
-    }
-    return res.redirect(indexURL)
+    const { title, overview } = req.body
+    const posterPath = req.body['poster-path']
+    const movie = await models.movie.create({
+      title,
+      overview,
+      posterPath,
+    })
+    return res.redirect(detailURL + '/' + movie.dataValues.id)
   } catch (error) {
     console.log(error)
     res.redirect(indexURL)
@@ -51,8 +53,11 @@ async function create(req, res) {
 async function detail(req, res) {
   try {
     const { id } = req.params
-    const row = await models.movie.findAll({ where: { id: id } })
-    const movie = row[0].dataValues
+    const row = await models.movie.findByPk(id)
+    if (row === null) {
+      return res.status(404).send('Page not found')
+    }
+    const movie = row.dataValues
     const context = {
       urls: { indexURL, registerURL, editURL, deleteURL },
       movie,
@@ -68,9 +73,11 @@ async function detail(req, res) {
 async function edit(req, res) {
   try {
     const { id } = req.params
-    const row = await models.movie.findAll({ where: { id: id } })
-
-    const movie = row[0].dataValues
+    const row = await models.movie.findByPk(id)
+    if (row === null) {
+      return res.status(404).send('Page not found')
+    }
+    const movie = row.dataValues
     const context = {
       urls: { indexURL, registerURL, updateURL },
       movie,
@@ -84,25 +91,22 @@ async function edit(req, res) {
 
 async function update(req, res) {
   try {
-    if (req.method === 'POST') {
-      const { id } = req.params
-      const { title, overview } = req.body
-      const postPath = req.body['poster-path']
-      await models.movie.update(
-        {
-          title,
-          overview,
-          postPath,
+    const { id } = req.params
+    const { title, overview } = req.body
+    const posterPath = req.body['poster-path']
+    await models.movie.update(
+      {
+        title,
+        overview,
+        posterPath,
+      },
+      {
+        where: {
+          id: id,
         },
-        {
-          where: {
-            id: id,
-          },
-        }
-      )
-      return res.redirect(detailURL + '/' + id)
-    }
-    res.redirect(indexURL)
+      }
+    )
+    return res.redirect(detailURL + '/' + id)
   } catch (error) {
     console.log(error.message)
     res.redirect(indexURL)
@@ -111,16 +115,13 @@ async function update(req, res) {
 
 async function deleteMovie(req, res) {
   try {
-    if (req.method === 'POST') {
-      const { id } = req.params
-      await models.movie.destroy({
-        where: {
-          id: id,
-        },
-      })
-      return res.redirect(indexURL)
-    }
-    res.redirect(indexURL)
+    const { id } = req.params
+    await models.movie.destroy({
+      where: {
+        id: id,
+      },
+    })
+    return res.redirect(indexURL)
   } catch (error) {
     console.log(error.message)
     res.redirect(indexURL)
