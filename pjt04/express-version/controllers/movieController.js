@@ -10,14 +10,15 @@ const deleteURL = '/movies/delete'
 
 async function index(req, res) {
   try {
-    const rows = await models.movie.findAll()
+    const rows = await models.movie.findAll({
+      order: [['id', 'DESC']],
+    })
     const movies = rows.map((row) => row.dataValues)
     movies.forEach((movie) => (movie.detailURL = detailURL + '/' + movie.id))
     const urls = { indexURL, registerURL }
     const context = {
       movies,
       urls,
-      csrfToken: req.csrfToken(),
     }
     return res.render('movies/index', context)
   } catch (error) {
