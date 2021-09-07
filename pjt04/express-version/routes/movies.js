@@ -8,17 +8,8 @@ const {
   update,
   deleteMovie,
 } = require('../controllers/movieController')
-const models = require('../models/index')
-const movieRouter = express.Router()
 
-models.sequelize
-  .sync()
-  .then(() => {
-    console.log('Connection has been established successfully.')
-  })
-  .catch((err) => {
-    console.error('Unable to connect to the database:', err)
-  })
+const movieRouter = express.Router()
 
 movieRouter.get('/', index)
 
