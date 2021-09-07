@@ -121,3 +121,33 @@ class Movie(models.Model):
 
 ![image-20210907150536332](README.assets/image-20210907150536332.png)
 
+## CSRF 토큰
+
+### express.js
+
+```html
+<form action="{{urls.updateURL}}/{{movie.id}}" method="post">
+  <input type="hidden" name="_csrf" value="{{csrfToken}}">
+```
+
+```js
+function register(req, res) {
+  const context = {
+    urls: { indexURL, registerURL, createURL },
+    csrfToken: req.csrfToken(),
+  }
+  return res.render('movies/register', context)
+}
+```
+
+- expressjs 에서는 csrf 토큰을 input 엘리먼트로 등록을 하고 서버에서 `req.csrfToken` 을 이용하여 전송한다
+
+#### Django
+
+```django
+<form action="{% url 'articles:create' %}" method="POST">
+  {% csrf_token %}
+```
+
+- csrf_token 으로 쉽게 토큰을 등록한다 
+
